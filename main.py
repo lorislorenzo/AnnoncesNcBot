@@ -2,7 +2,6 @@ import requests
 import json
 import unicodedata
 import re
-import time
 import os
 from dotenv import load_dotenv
 
@@ -64,7 +63,9 @@ for annonce in data:
                     "text": message
                 }
                 # envoie le message via le bot telegram
-                requests.post(url_telegram, data=payload)
+                response_telegram = requests.post(url_telegram, data=payload)
+                print(response_telegram.status_code)
+                print(response_telegram.text)
                 print("MATCH :", titre_annonce)
                     
                 # break pour éviter d'envoyer plusieurs messages pour la même annonce si elle contient plusieurs mots clés
