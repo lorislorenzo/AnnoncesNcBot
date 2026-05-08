@@ -22,7 +22,9 @@ TOKEN = os.getenv("TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
 # variable de l'url telegram pour envoyer les messages via le bot (token)
 url_telegram = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
-
+print(TOKEN)
+print(CHAT_ID)
+print(url_telegram)
 # charge le json avec les mots recherchés
 with open("keywords.json", "r") as f: 
     data_keywords = json.load(f)   
