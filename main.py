@@ -5,8 +5,6 @@ import re
 import os
 from dotenv import load_dotenv
 
-print("SCRIPT DEMARRE")
-
 #fonction pour gérer les accents
 def normalize(text):
     text = text.lower()
@@ -22,8 +20,6 @@ load_dotenv()
 TOKEN = os.getenv("TOKEN")
 # mon id telegram
 CHAT_ID = os.getenv("CHAT_ID")
-print(TOKEN)
-print(CHAT_ID)
 # variable de l'url telegram pour envoyer les messages via le bot (token)
 url_telegram = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
 
@@ -45,13 +41,11 @@ new_ids = set()
 response = requests.get(URL)
 # on stock les données dans une variable
 data = response.json()
-print(len(data))
 # parcourir les annonces et stock les id et les titres
 for annonce in data:
     id_annonce = annonce["id"]
     titre_annonce = normalize(annonce["title"])
     # on vérifie si l'id n'est pas dans le json des id
-    print("Annonce trouvée")
     if id_annonce not in seen_ids:
     # boucle pour vérifier si un mot clé est dans le titre de l'annonce
         for mot in KEYWORDS:
@@ -60,6 +54,7 @@ for annonce in data:
                 message = f"""
                 🔥 Nouveau match !
                 Titre : {titre_annonce}
+                Prix : {annonce.get('price', 'N/A')}
                 Lien :
                 {annonce["link_url"]}
                 """
@@ -69,12 +64,7 @@ for annonce in data:
                     "text": message
                 }
                 # envoie le message via le bot telegram
-                print(url_telegram)
                 response_telegram = requests.post(url_telegram, data=payload)
-                print(response_telegram.status_code)
-                print(response_telegram.text)
-                print("MATCH :", titre_annonce)
-                    
                 # break pour éviter d'envoyer plusieurs messages pour la même annonce si elle contient plusieurs mots clés
                 break
         # si l'id n'est pas dans le json on le stock
@@ -85,3 +75,6 @@ for annonce in data:
         # on ajoute les nouveaux id dans le json
     with open("seen.json", "w") as f:
         json.dump(list(seen_ids), f)
+
+
+# gérer les doublons
