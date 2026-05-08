@@ -63,6 +63,7 @@ for annonce in data:
                     "text": message
                 }
                 # envoie le message via le bot telegram
+                print(url_telegram)
                 response_telegram = requests.post(url_telegram, data=payload)
                 print(response_telegram.status_code)
                 print(response_telegram.text)
@@ -78,4 +79,3 @@ for annonce in data:
         # on ajoute les nouveaux id dans le json
     with open("seen.json", "w") as f:
         json.dump(list(seen_ids), f)
-    # on attend 5 minutes avant de relancer la boucle
