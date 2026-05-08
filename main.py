@@ -73,8 +73,8 @@ for annonce in data:
                 break
         # si l'id n'est pas dans le json on le stock
         
-        if id_annonce not in seen_ids:
-            new_ids.add(id_annonce)
+        #if id_annonce not in seen_ids:
+            #new_ids.add(id_annonce)
     seen_ids.update(new_ids) 
         # on ajoute les nouveaux id dans le json
     with open("seen.json", "w") as f:
