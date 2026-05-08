@@ -22,6 +22,8 @@ load_dotenv()
 TOKEN = os.getenv("TOKEN")
 # mon id telegram
 CHAT_ID = os.getenv("CHAT_ID")
+print(TOKEN)
+print(CHAT_ID)
 # variable de l'url telegram pour envoyer les messages via le bot (token)
 url_telegram = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
 
