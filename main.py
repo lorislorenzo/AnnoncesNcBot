@@ -1,4 +1,5 @@
 import requests
+import time
 import json
 import unicodedata
 import re
@@ -34,49 +35,52 @@ try:
 except:  # noqa: E722
     seen_ids = set()
 
-
-new_ids = set()
-# ance la requête pour récuper les annonces
-response = requests.get(URL)
-# on stock les données dans une variable
-data = response.json()
-# parcourir les annonces et stock les id et les titres
-for annonce in data:
-    id_annonce = annonce["id"]
-    titre_annonce = normalize(annonce["title"])
-    # on vérifie si l'id n'est pas dans le json des id
-    if id_annonce not in seen_ids:
-    # boucle pour vérifier si un mot clé est dans le titre de l'annonce
-        for mot in KEYWORDS:
-            if re.search(rf"\b{re.escape(mot)}\b", titre_annonce):
-                print(f"Nouveau match : {titre_annonce}")
-            # variable du message qui sera envoyé sur telegram
-                message = f"""
-                🔥 Nouveau match !
-                Titre : {titre_annonce}
-                Prix : {annonce.get('price', 'N/A')}
-                Lien :
-                {annonce["link_url"]}
-                """
-                # variable de mon url telegram + le message à envoyer
-                payload = {
-                    "chat_id": CHAT_ID,
-                    "text": message
-                }
-                # envoie le message via le bot telegram
-                response_telegram = requests.post(url_telegram, data=payload)
-                print(response_telegram.status_code)
-                print(response_telegram.text)
-                # break pour éviter d'envoyer plusieurs messages pour la même annonce si elle contient plusieurs mots clés
-                break
-        # si l'id n'est pas dans le json on le stock
-        
+while True:
+    new_ids = set()
+    # ance la requête pour récuper les annonces
+    response = requests.get(URL)
+    # on stock les données dans une variable
+    data = response.json()
+    # parcourir les annonces et stock les id et les titres
+    for annonce in data:
+        id_annonce = annonce["id"]
+        titre_annonce = normalize(annonce["title"])
+        price_annonce = annonce["price"]
+        # on vérifie si l'id n'est pas dans le json des id
         if id_annonce not in seen_ids:
-            new_ids.add(id_annonce)
-    seen_ids.update(new_ids)
-        # on ajoute les nouveaux id dans le json
+        # boucle pour vérifier si un mot clé est dans le titre de l'annonce
+            for mot in KEYWORDS:
+                mot = normalize(mot)
+                if re.search(rf"\b{re.escape(mot)}\b", titre_annonce):
+                    print(f"Nouveau match : {titre_annonce}")
+                # variable du message qui sera envoyé sur telegram
+                    message = f"""
+                    🔥 Nouveau match !
+                    Titre : {titre_annonce}
+                    Prix : {price_annonce} XPF
+                    <a href="{annonce['link_url']}">Voir l'annonce</a>
+                    """
+                    # variable de mon url telegram + le message à envoyer
+                    payload = {
+                        "chat_id": CHAT_ID,
+                        "text": message,
+                        "parse_mode": "HTML"
+                    }
+                    # envoie le message via le bot telegram
+                    response_telegram = requests.post(url_telegram, data=payload)
+                    print(response_telegram.status_code)
+                    print(response_telegram.text)
+                    # break pour éviter d'envoyer plusieurs messages pour la même annonce si elle contient plusieurs mots clés
+                    break
+            # si l'id n'est pas dans le json on le stock
+            
+            if id_annonce not in seen_ids:
+                new_ids.add(id_annonce)
+        seen_ids.update(new_ids)
+            # on ajoute les nouveaux id dans le json
     with open("seen.json", "w") as f:
         json.dump(list(seen_ids), f)
-
+    # Attendre 1 minute avant la prochaine requête
+    time.sleep(60)  
 
 # gérer les doublons
