@@ -1,6 +1,8 @@
 name: AnnoncesNcBot
 
 on:
+  workflow_dispatch:
+
   schedule:
     - cron: "*/10 * * * *"
 
