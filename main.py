@@ -65,6 +65,8 @@ for annonce in data:
                 }
                 # envoie le message via le bot telegram
                 response_telegram = requests.post(url_telegram, data=payload)
+                print(response_telegram.status_code)
+                print(response_telegram.text)
                 # break pour éviter d'envoyer plusieurs messages pour la même annonce si elle contient plusieurs mots clés
                 break
         # si l'id n'est pas dans le json on le stock
