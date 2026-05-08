@@ -5,6 +5,8 @@ import re
 import os
 from dotenv import load_dotenv
 
+print("SCRIPT DEMARRE")
+
 #fonction pour gérer les accents
 def normalize(text):
     text = text.lower()
@@ -41,11 +43,13 @@ new_ids = set()
 response = requests.get(URL)
 # on stock les données dans une variable
 data = response.json()
+print(len(data))
 # parcourir les annonces et stock les id et les titres
 for annonce in data:
     id_annonce = annonce["id"]
     titre_annonce = normalize(annonce["title"])
     # on vérifie si l'id n'est pas dans le json des id
+    print("Annonce trouvée")
     if id_annonce not in seen_ids:
     # boucle pour vérifier si un mot clé est dans le titre de l'annonce
         for mot in KEYWORDS:
