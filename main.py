@@ -22,9 +22,6 @@ TOKEN = os.getenv("TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
 # variable de l'url telegram pour envoyer les messages via le bot (token)
 url_telegram = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
-print(TOKEN)
-print(CHAT_ID)
-print(url_telegram)
 # charge le json avec les mots recherchés
 with open("keywords.json", "r") as f: 
     data_keywords = json.load(f)   
@@ -52,6 +49,7 @@ for annonce in data:
     # boucle pour vérifier si un mot clé est dans le titre de l'annonce
         for mot in KEYWORDS:
             if re.search(rf"\b{re.escape(mot)}\b", titre_annonce):
+                print(f"Nouveau match : {titre_annonce}")
             # variable du message qui sera envoyé sur telegram
                 message = f"""
                 🔥 Nouveau match !
@@ -73,12 +71,12 @@ for annonce in data:
                 break
         # si l'id n'est pas dans le json on le stock
         
-        ##if id_annonce not in seen_ids:
-            ##new_ids.add(id_annonce)
-    ##seen_ids.update(new_ids) 
+        if id_annonce not in seen_ids:
+            new_ids.add(id_annonce)
+    seen_ids.update(new_ids)
         # on ajoute les nouveaux id dans le json
-    ##with open("seen.json", "w") as f:
-        ##json.dump(list(seen_ids), f)
+    with open("seen.json", "w") as f:
+        json.dump(list(seen_ids), f)
 
 
 # gérer les doublons
