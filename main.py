@@ -73,12 +73,11 @@ while True:
                 if annonce_match_keywords(titre_annonce, KEYWORDS) or url == AlwaysAlertURL:
                     print(f"Nouveau match : {titre_annonce}")
                     # variable du message qui sera envoyé sur telegram
-                    message = f"""
-                    🔥 Nouveau match !
-                    Titre : {titre_annonce}
-                    Prix : {price_annonce} XPF
-                    <a href="{annonce['link_url']}">Voir l'annonce</a>
-                    """
+                    message = (
+                    f"{titre_annonce}\n"
+                    f"{price_annonce} XPF\n"
+                    f'<a href="{annonce["link_url"]}">lien de l''annonce</a>'
+                    )
                     # variable de mon url telegram + le message à envoyer
                     payload = {
                         "chat_id": CHAT_ID,
